@@ -1,6 +1,6 @@
  {{--  whats on your mind  --}}
  <div class="col-md-6 createForm">
-        <form action="{{route('post.post')}}"  class="uploadform"  method="post">
+        <form action="{{route('post.post')}}"  class="uploadform"  enctype="multipart/form-data" method="post">
             <div class="form-group">
                <textarea name="body" class="form-control" cols="30" rows="10" placeholder="Say something ..."></textarea>
                </div>

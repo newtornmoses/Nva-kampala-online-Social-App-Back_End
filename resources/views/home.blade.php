@@ -131,12 +131,29 @@
       </div>
             <p>{{$post->body}}</p>
             <a href="{{route('post.show', $post->id)}}">
-            <img src="{{asset('images/'.$post->image)}}" class="img-responsive " alt="">
+                
+            <img src="{{asset('/images/'.$post->image)}}" class="img-responsive " alt="">
           </a>
             <div class="Postcontrols">
                 <div class="likes">
-                <i class="fa fa-thumbs-up  text-primary"> Like</i>
+                
+                    <form action="{{route('post.likes', $post->id)}}" method="post">
+                     
+                  
+                     @foreach($likes as $like)
+              
+                      @if($post->id === $like->post_id)
+                     {{$like->user->name}}
+                    
+                     @endif   
+                     @endforeach
+                     <i class="fa fa-thumbs-up  text-primary">
+                         <button type="submit">     {{count($post->likes)}} Like</button></i>
+                         {{csrf_field()}}
+                     </form>
               </div>
+
+
               <div class="comment">
                 <i class="commentIcon text-primary">
                   comment </i>
@@ -149,34 +166,87 @@
               </div>
         
               <div class="time">
-                Posted on: {{$post->created_at}}
+                Posted : {{$post->created_at->diffForHumans()}}
               </div>
               </div>
 
-              <form action="{{route('post.comment', $post->id)}}" method="post">
+              <form action="{{route('post.comment', $post->id)}}" class="commentForm" method="post">
                 <div class="comment_row">
                <img src="{{'images/'.$post->user->profile_Image}}"  class="img-circle img-responsive commentpic" style="width:30px; height:30px;" alt="">
               
-               <input type="text" class="form-control" name="comment" id="comment" placeholder="{{$post->user->name .' say something'}}" >
+               <input type="text" class="form-control commentField" name="comment" id="comment" placeholder="{{$post->user->name .' say something'}}" >
              
                {{csrf_field()}}
               </div>
               </form>
+           @if (count($post->comments)>0)
+           <h4>Comments <span class="badge">{{count($post->comments)}}</span></h4>
+            
               <div class="commentsField">
                 <ul>
                 
-               
-                     @foreach ($post->comments as $comment)
+                    @foreach ($post->comments as $comment)
+                    
                      <li class="commentSection">
-<div class="singleComment">
+                      <div class="singleComment">
                        <div class="user">
                         <img src="{{'images/'.$comment->user->profile_Image}}"  class="img-circle img-responsive commentpic" style="width:30px; height:30px;" alt="">
                         <p class="commentUser">{{$comment->user->name}}</p>
                       </div>
-                      <p class="actualComment">{{$comment->comment}}</p>
+                      <p class="actualComment">{{$comment->comment}} <i class="fa fa-clock-o "> <span class="badge"> {{$comment->created_at->diffForHumans()}}</span></i></p>
 
                     </div>
                       <div class="Replycontrols">
+                          <div class="likes">
+                           <i class="fa fa-thumbs-up  text-primary">Like</i>
+                            
+                        </div>
+                       
+                  
+                        <div class="replybtn">
+                          <i class="fa fa-reply  text-primary"> reply</i>
+                        </div>
+                     
+                  
+                      
+                        
+                          
+              <form action="{{route('post.reply', $comment->id)}}" class="col-md-6 replyForm" method="post">
+                  <div class="comment_row col-md-6">
+                 {{--  <img src="{{'images/'.$post->user->profile_Image}}"  class="img-circle img-responsive commentpic" style="width:30px; height:30px;" alt="">
+                  --}}
+                 <input type="text" class="form-control" name="reply" id="reply" placeholder="{{Auth::user()?Auth::user()->name.' type your reply': ' '  .'  type your reply '}}" >
+               
+                 {{csrf_field()}}
+                </div>
+                </form>
+                
+                      </div>
+                    
+
+                     <div class="replies">
+                     
+                      <div class="viewmore">
+                          <a class="viewLess btn btn-info"><i class="fa fa-caret-up"></i> view less</a>
+                        <a class="viewReplies btn btn-primary"><i class="fa fa-caret-up"></i> view all replies</a>
+                      </div>
+                       @foreach ( $commentReply as $reply )
+                       @if($reply->comment_id === $comment->id)
+                   
+                       <ul class="reply-group">
+                       
+                        <li class="replyText">
+                    {{$reply->reply}}  <span class="badge reply"> 
+                      
+                      <img src="{{asset('images/'.$reply->user->profile_Image)}}" class="img-circle" width="30px" height="30px" alt="">
+                      {{$reply->user->name}}</span> <span>
+                        {{$reply->created_at->diffForHumans()}} 
+                      </span>
+
+                      
+                       </ul>
+
+                       <div class="Replycontrols">
                           <div class="likes">
                           <i class="fa fa-thumbs-up  text-primary"> Like</i>
                         </div>
@@ -185,19 +255,29 @@
                         <div class="share">
                           <i class="fa fa-reply  text-primary"> reply</i>
                         </div>
+                      </div>
+                   
+                   
+                       @endif
+                       
+                        @endforeach
+                        
+                      </div>
+                    </li>
                   
-                      
-                        </div>
-
-                     </li>
-                     
-                    
                      @endforeach 
                  
                  
                  
                 </ul>
+              
               </div>
+           
+
+              @else
+            <h5>No comments</h5>
+
+           @endif
               
             </div>
         </div>

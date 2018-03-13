@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Post;
 use App\User;
 use App\comments;
+use App\Reply;
+use App\Likes;
 use Auth;
    /**
     *  Post controller 
@@ -32,7 +36,25 @@ class PostController extends Controller
     {
         $users = User::all();
         $posts = Post::orderBy('created_at', 'desc')->get();
-         return view('home')->with(['posts' => $posts, 'users' => $users]);
+   $reply = Reply::all();
+
+   $like =Likes::all();
+   $Allcomments =comments::all();
+   
+
+   $likesArray = array();
+     foreach ($like as $likes) {
+         array_push($likesArray, $likes);
+     }
+
+    // return $likesArray;
+         return view('home')->with([
+         'posts' => $posts, 
+         'users' => $users,
+         'allcomments'=> $Allcomments,
+         'likes'=>$likesArray,
+         'commentReply'=> $reply
+         ]);
     }
 
     /**
@@ -54,13 +76,21 @@ class PostController extends Controller
         $this->validate(
             $request, 
             [
-            'body'=>'required',
-            'image' => 'required'
+            'body'=>'max:255|nullable',
+            'image' => 'nullable'
              ]
         );
         $newPost = new Post();
+        if($request-> hasFile('image'))
+        { 
+            $file = $request->file('image');
+            $newPost->image = $request->image->  Storage::put('public/images', $file);;
+            //storage::disk('local')->put($file);
+          
+        }
+
         $newPost->body = $request->input('body');
-         $newPost->image = $request->input('image');
+        $file = $request->file('image');
         $newPost->user_id = auth::user()->id;
        
         $newPost->save();

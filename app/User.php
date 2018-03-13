@@ -1,7 +1,8 @@
 <?php
 
 namespace App;
-
+use App\Post;
+use App\Likes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Cache;
@@ -17,6 +18,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password', 'profile_image'
     ];
+    
+
+  
     
 
     /**
@@ -37,6 +41,22 @@ class User extends Authenticatable
     public function comments()
     {
         return $this->hasMany('App\comments');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany('App\Reply');
+    }
+
+    public function likes()
+    {
+        return $this->hasOne('App\Likes');
+    }
+
+
+    public function friendships()
+    {
+        return $this->hasMany('App\friendship');
     }
 
     public function online()

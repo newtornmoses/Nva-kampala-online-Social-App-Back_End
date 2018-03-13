@@ -13,6 +13,10 @@
 
 Route::get('/', 'PostController@index')->name('post.home') ;
 
+Route::get('/comments', 'commentController@index')->name('post.getComments');
+Route::get('/reply', 'ReplyController@index')->name('post.reply');
+
+
 Route::get('/{id}','PostController@show' )->name('post.show');
 
 Route::get('/edit/{id}', 'PostController@edit')->name('post.edit');
@@ -22,6 +26,10 @@ Route::post('/update/{id}', 'PostController@update')->name('post.update');
 
 Route::post('/delete/{id}', 'PostController@destroy')->name('post.delete');
 Route::post('/comment/{id}', 'commentController@store')->name('post.comment');
+
+Route::post('/reply/{id}', 'ReplyController@store')->name('post.reply');
+Route::post('/likePost/{id}', 'LikesController@addLike')->name('post.likes');
+Route::post('/dislikePost/{id}', 'LikesController@destroy')->name('post.dislikes');
 
 
 //users

@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Auth;
-use App\comments;
-use App\Post;
-class commentController extends Controller
+
+class FriendshipController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,14 +13,7 @@ class commentController extends Controller
      */
     public function index()
     {
-       $comment = comments::all();
-
-       return $comment;
-    }
-
-    public function _construct()
-    {
-
+        //
     }
 
     /**
@@ -32,7 +23,7 @@ class commentController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -41,24 +32,9 @@ class commentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request  $request, $id)
+    public function store(Request $request)
     {
-        $this->validate($request, [
-            'comment'=> 'required|max:220',
-            ]
-        );
-
-        $post = Post::find($id);
-
-        $comment = new comments();
-        $comment->comment=$request->input('comment');
-        $comment->user_id =Auth::user()->id;
-        $comment->post_id =$post->id;
-        $comment->reply_id=0;
-        $comment->save();
-
-    
-        return redirect()->back();
+        //
     }
 
     /**

@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
 use Auth;
 use App\comments;
 use App\Post;
-class commentController extends Controller
+use App\Reply;
+use Illuminate\Support\Facades\DB;
+
+class ReplyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,14 +19,16 @@ class commentController extends Controller
      */
     public function index()
     {
-       $comment = comments::all();
+        // $cmtid = comments::find($id);
+        // $comment = Reply::find($cmtid->id);
+         
+        $newreply = DB::table('replies')
+          ->Join( 'comments', 'replies.comment_id',  '=','comments.id' )
+        //   ->Join('users', 'users.id', '=', 'replies.user_id')
+          ->get();
 
-       return $comment;
-    }
-
-    public function _construct()
-    {
-
+          $replies = Reply::all();
+        return $replies;
     }
 
     /**
@@ -32,7 +38,7 @@ class commentController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -41,24 +47,22 @@ class commentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request  $request, $id)
-    {
-        $this->validate($request, [
-            'comment'=> 'required|max:220',
-            ]
-        );
+    public function store(Request $request , $id)
+    {  
+        $comment_id = comments::find($id);
+       $reply = new Reply();
+       $reply->reply = $request->input('reply');
+       $reply->user_id= Auth::id();
+       $reply->comment_id =$comment_id->id;
+       $reply->save();
+       
+   
+       $comment_id->update([
+           'reply_id' => $reply->id
+       ]);
 
-        $post = Post::find($id);
+       return redirect()->back();
 
-        $comment = new comments();
-        $comment->comment=$request->input('comment');
-        $comment->user_id =Auth::user()->id;
-        $comment->post_id =$post->id;
-        $comment->reply_id=0;
-        $comment->save();
-
-    
-        return redirect()->back();
     }
 
     /**

@@ -3,6 +3,7 @@
 
         use Illuminate\Http\Request;
         use App\User;
+        use  App\Post;
         use Auth;
         class UserController extends Controller
         {
@@ -33,27 +34,35 @@
         public function Userprofile()
             {
                 $userArray = array();
-                $userid = auth()->user()->id;
-                $user = Auth::user()->posts();
-                foreach(Auth::user()->posts() as $post):
+                $user = Auth::user()->posts;
+                foreach(  $user as $post):
                 array_push($userArray, $post);
                 endforeach;
-            //   usort($userArray, function ($a, $b ) {
-            //       return $a->id < $b->id;
-            //     });
 
-         
-               dd( Auth::user()->posts);
-                //return view('Userprofile')->with('posts', $userArray);
+                // sort the array
+              usort($userArray, function ($a, $b ) {
+                  return $a->id < $b->id;
+                });
+           
+               
+                return view('Userprofile')->with('posts', $userArray);
             }
 
             //get userprofile by id
 
             public function UserprofileId($id)
             {
-            $user = User::find($id);
+                $userArray =array();
+            $userbyId = User::find($id)->posts;
+          foreach ($userbyId as $user):
+             array_push($userArray, $user);
+          endforeach;
 
-            return view('UserprofileId')->with('posts', $user->posts);
+            usort($userArray, function($a, $b){
+                return $a->id < $b->id;
+            });
+
+            return view('UserprofileId')->with('posts', $userArray);
             }
 
 

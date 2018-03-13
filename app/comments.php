@@ -8,6 +8,8 @@ use App\comments;
 use App\User;
 class comments extends Model
 {
+ public $fillable =[ 'user_id', 'comment','post_id'];
+
    public function posts()
    {
       return $this->belongsTo('App\Post');
@@ -17,4 +19,12 @@ class comments extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function reply()
+    {
+        return $this->hasMany('App\Reply');
+    }
+
+    public $with = ['user'];
+    
 }
