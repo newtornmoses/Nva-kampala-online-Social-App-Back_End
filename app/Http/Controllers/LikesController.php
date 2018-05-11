@@ -15,27 +15,33 @@ class LikesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function addLike(Request $request, $id)
+    public function addLike( $id, $user)
     {   $post_id = Post::find($id);
         $likes = new Likes();
         $likes->post_id = $post_id->id;
-        $likes->user_id = Auth::id();
+        $likes->user_id = $user;
 
-    
+       
 // check if user already liked the post
-        $liked = Likes::where('user_id', Auth::id())
+        $liked = Likes::where('user_id', $user)
                         ->where('post_id', $post_id->id)
                         ->first();
         if($liked){
             //remove the like
             $liked->delete();  
+              // get all likes by id
+         $new_likes = Likes::all();
+        return response()->json(['likes' =>$new_likes]);
+            
         }
         else{
 
             // else save the like
             $likes->save();
+            $new_likes = Likes::all();
+            return response()->json(['likes' =>$new_likes]);
         }
-        return redirect()->back();
+       
         
     }
 

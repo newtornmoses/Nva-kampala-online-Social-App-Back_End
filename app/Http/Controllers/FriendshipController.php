@@ -3,60 +3,63 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\friendship;
+use App\User;
+use Auth;
 class FriendshipController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * add friend.
      *
-     * @return \Illuminate\Http\Response
+     * 
      */
-    public function index()
+    public function addfriend($reciever, $id)
+    {
+      return User::find($id)->sendFriendRequest($reciever);
+        
+    }
+
+    /**
+     * confirmfriend req.
+     *
+     * 
+     */
+    public function confirmfriend()
     {
         //
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 
      *
-     * @return \Illuminate\Http\Response
+     * friend status
+     * 
      */
-    public function create()
+    public function status($reciever, $user_id)
     {
-        //
+       return User::find($user_id)->status($reciever, $user_id);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * cancle request sent
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * 
+     * 
      */
-    public function store(Request $request)
+    public function canclefriend($reciever, $user_id)
     {
-        //
+        return User::find($user_id)->cancle($reciever , $user_id);
     }
 
     /**
-     * Display the specified resource.
+     * get pending requests
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * 
+     * 
      */
-    public function show($id)
+    public function pending($user_id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return User::find($user_id)->pendingFriends();
     }
 
     /**

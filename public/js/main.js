@@ -53,7 +53,7 @@ for (let i = 0; i < viewReplies.length; i++) {
 
 var replies = document.querySelectorAll('.replies');
 for (let i = 0; i < replies.length; i++) {
-    document.addEventListener('DOMContentLoaded', function(event) {
-        console.log(event);
-    })
+    // document.addEventListener('DOMContentLoaded', function(event) {
+    //     console.log(event);
+    // })
 }

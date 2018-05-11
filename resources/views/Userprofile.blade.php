@@ -5,8 +5,8 @@
 <div class="user_posts">
   
    <div class="col-md-8 col-md-offset-2">
-      @if(count($posts) > 0)
-      @foreach($posts as $post)
+      @if(count($user) > 0)
+      @foreach($user as $post)
       <div class="homePosts">
   
      
@@ -14,7 +14,7 @@
       <div class="userInfo">
       
       <span> 
-         {{--  <img src="{{asset('images/'.$post->image)}}"  class="img-circle " width="50px" height="50px" alt="">  --}}
+         {{--  <img src="{{asset('images/'.$post->file)}}"  class="img-circle " width="50px" height="50px" alt="">  --}}
          <img src="{{asset('images/'.Auth::user()->profile_Image)}}"  class="img-circle " width="50px" height="50px" alt="">
          
         
@@ -26,7 +26,13 @@
     </div>
           <p>{{$post->body}}</p>
           <a href="{{route('post.show', $post->id)}}">
-          <img src="{{asset('images/'.$post->image)}}" class="img-responsive " alt="">
+          {{-- show video or image --}}
+          @if ($post->mime_type ==='video')
+          <video src="{{asset($post->file)}}" controls></video>
+
+          @else
+          <img src="{{asset($post->file)}}" class="img-responsive " alt="">
+          @endif
         </a>
           <div class="Postcontrols">
               <div class="likes">
@@ -41,7 +47,7 @@
             </div>
       
             <div class="time">
-              Posted on: {{$post->created_at}}
+              Posted on: {{$post->created_at->diffForHumans()}}
             </div>
             </div>
             <form action="{{route('post.comment', $post->id)}}" method="post">

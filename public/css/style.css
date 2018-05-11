@@ -81,7 +81,7 @@
     }
     
     .actualComment {
-        margin-left: 20px;
+        margin-left: 43px;
         font-weight: bold;
     }
     
@@ -378,4 +378,28 @@ color: teal; */
         -moz-osx-font-smoothing: grayscale;
         margin: 0px 20px;
         cursor: pointer;
+    }
+    
+    #capture,
+    #closeCamera {
+        display: none
+    }
+    
+    #closeCamera {
+        border: none;
+        background: #e04f40;
+        border: none;
+        margin-left: 20px;
+    }
+    
+    #captureVideo {
+        border-radius: 19px;
+        box-shadow: 14px 16px 13px #00000080;
+    }
+    
+    video {
+        width: 640px;
+        height: 360px;
+        border: 1px solid #0d2a44;
+        background: #171617;
     }

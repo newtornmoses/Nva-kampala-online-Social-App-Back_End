@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable= [ 'image', 'body', 'user_id'];
+    protected $fillable= [ 'file', 'body', 'user_id', 'mime_type', 'slug'];
 
-    public $with = ['user', 'comments'];
+    public $with = ['user', 'comments', 'likes'];
 
     public function user()
     {
@@ -20,8 +20,15 @@ class Post extends Model
         return $this->hasMany('App\comments');
     }
 
+    public function replies()
+    {
+        return $this->hasMany('App\Reply');
+    }
+
     public function likes()
     {
         return $this->hasMany('App\Likes');
     }
+
+//    public  $with=['replies'];
 }

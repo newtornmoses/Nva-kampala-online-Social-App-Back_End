@@ -5,7 +5,7 @@
                <textarea name="body" class="form-control" cols="30" rows="10" placeholder="Say something ..."></textarea>
                </div>
                <div class="uploadTypes">
-                    <i class="fa fa-camera upload" > Camera </i>
+                    <i class="fa fa-camera upload"  id="camera" > Camera </i>
                     <i class="fa fa-photo upload" > Photo</i>
                     <i class="fa fa-video-camera upload"> Video</i>
                     <i class="fa fa-microphone upload"> Audio</i>
@@ -13,26 +13,23 @@
                
             
                <div class="form-group">
-                <input type="file" name="image" class="form-control postfileUpload" >
+                <input type="file" name="file" class="form-control postfileUpload" >
                 </div>
                 <hr>
                <input type="submit" class ="btn btn-warning col-md-offset-4" value="Say something">
-              
                {{csrf_field()}}
            
             </form>
 
-            <div class="modal fade" id="captureVideo">
-                <video class="video"></video>
+            <div  id="capture" class="col-md-6 col-sm-6 ">
+                    <button id="closeCamera" class="btn btn-warning cameraClose">Close Camera <i class="fa fa-close"></i></button>
+                <video class="video" style="width:400; height:300" id="captureVideo" controls></video>
                 <canvas class="canvas"></canvas>
             </div>
 
 
  </div>
 
- <script src="{{asset('js/scripts.js')}}"></script> 
- <script src="{{asset('js/camera.js')}}"></script> 
- {{-- <script src="{{asset('js/jquery-3.2.1.min.js')}}"></script> --}}
  
 
  

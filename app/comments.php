@@ -20,11 +20,13 @@ class comments extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function reply()
+    public function replies()
     {
         return $this->hasMany('App\Reply');
     }
 
-    public $with = ['user'];
+   
+
+    public $with = ['user', 'replies' ];
     
 }

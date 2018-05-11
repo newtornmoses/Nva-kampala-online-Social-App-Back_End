@@ -17,17 +17,22 @@
 </head>
 <body>
    
-    
-   <div class="container">
-       @yield('header')
-    @yield('createpost')    
-    @yield('content')
+   
+   
 
+      
+   
+    
+    @yield('createpost')    
+    @yield('header')  
+    @yield('content')
+ 
     @include('includes.footer')
          
-</div>
-<script src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
+    
+  
+<script src="{{asset('js/app.js')}}"></script>
+@include('includes.scripts')
 
-<script src="{{asset('js/main.js')}}"></script>
 </body>
 </html>

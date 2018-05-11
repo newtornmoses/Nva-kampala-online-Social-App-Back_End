@@ -1,15 +1,17 @@
 <?php
 
 namespace App;
-use App\Post;
+
 use App\Likes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Cache;
-class User extends Authenticatable
+use App\Traits\Frendable;
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
-
+    use Frendable;
     /**
      * The attributes that are mass assignable.
      *
@@ -20,6 +22,7 @@ class User extends Authenticatable
     ];
     
 
+   
   
     
 
@@ -32,10 +35,35 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+
+
+    // Rest omitted for brevity
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+
    
     public function posts()
     {
-        return  $this->hasMany('App\Post');
+        return  $this->hasMany('App\Post')->orderBy('created_at', 'dec');
     }
 
     public function comments()
@@ -70,4 +98,7 @@ class User extends Authenticatable
         return Cache::get('lastseen'.$this->id);
         
     }
+
+
+   
 }

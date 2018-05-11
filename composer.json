@@ -6,13 +6,17 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "barryvdh/laravel-cors": "^0.11.0",
         "doctrine/dbal": "^2.6",
         "fideloper/proxy": "~3.3",
         "get-stream/stream-laravel": "^2.3",
         "gloudemans/shoppingcart": "^2.5",
+        "irazasyed/jwt-auth-guard": "^1.0",
+        "jadjoubran/laravel-angular": "^0.4.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "tymon/jwt-auth": "^1.0.0-rc.2"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
@@ -38,8 +42,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-            ]
+            "dont-discover": []
         }
     },
     "scripts": {

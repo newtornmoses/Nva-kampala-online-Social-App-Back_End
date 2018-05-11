@@ -2,15 +2,16 @@
  
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
+use Auth;
 use App\Post;
 use App\User;
-use App\comments;
-use App\Reply;
 use App\Likes;
-use Auth;
+use App\Reply;
+use App\comments;
+use carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
    /**
     *  Post controller 
     *
@@ -33,28 +34,33 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    { 
+        $userAll = User::all();
+    
+       
+        return $userAll;
+        
+        if(!Auth::check()){
+            return response('not logged in');
+        }
         $users = User::all();
-        $posts = Post::orderBy('created_at', 'desc')->get();
-   $reply = Reply::all();
-
-   $like =Likes::all();
-   $Allcomments =comments::all();
+       $posts = Post::orderBy('created_at', 'desc')->get();
    
 
-   $likesArray = array();
-     foreach ($like as $likes) {
-         array_push($likesArray, $likes);
-     }
+         return view('home')->with('users', $users);
+    }
 
-    // return $likesArray;
-         return view('home')->with([
-         'posts' => $posts, 
-         'users' => $users,
-         'allcomments'=> $Allcomments,
-         'likes'=>$likesArray,
-         'commentReply'=> $reply
-         ]);
+    // json feed
+
+    public function jsonIndex()
+    { 
+        
+        
+        $users = User::all();
+       $posts = Post::orderBy('created_at', 'desc')->get();
+    //    $logged_in = User::find(Auth::user()->id);
+  
+         return response()->json(['posts' => $posts, 'users' => $users , 'user'=>Auth::user()]);
     }
 
     /**
@@ -70,32 +76,89 @@ class PostController extends Controller
      * @param \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request, $user)
+    { 
+        
 
         $this->validate(
             $request, 
             [
             'body'=>'max:255|nullable',
-            'image' => 'nullable'
+            'file' => 'nullable',
+            'mime_type' =>'nullable'
              ]
         );
-        $newPost = new Post();
-        if($request-> hasFile('image'))
-        { 
-            $file = $request->file('image');
-            $newPost->image = $request->image->  Storage::put('public/images', $file);;
-            //storage::disk('local')->put($file);
-          
-        }
+            
+   
+     if ($request->body === 'undefined' &&  $request->file('file') === 'undefined' ) {
+         return response()->json('please check your uploads');
+     }
+     
+    if ($request->body !== 'undefined') {
+        $body = $request->body;
 
-        $newPost->body = $request->input('body');
-        $file = $request->file('image');
-        $newPost->user_id = auth::user()->id;
-       
-        $newPost->save();
-        return redirect('/'); 
+    }else {
+        $body = null;
         
+    }
+    
+
+       
+            if ( $request->hasFile('file')) {
+                $file =str_slug(Carbon::now(), '-').$request->file('file')->getClientOriginalName();
+                $newName =  '/storage/images/'.$file;  
+              $request->file->storeAs('public/images', $file); 
+          
+              
+  
+          
+            
+          
+          // check form mime type
+          $filetype =$request->file('file')->getClientMimeType();
+        
+          if($filetype ==='image/jpeg' ||$filetype ==='image/gif' ||  $filetype ==='image/jpg'  ||  $filetype ==='image/JPG' ||  $filetype ==='image/png' )
+          {
+           $mime_type = 'image';
+              
+
+          }
+          elseif ($filetype ==='video/mp4' ||$filetype ==='video/mpg'||$filetype ==='video/mpeg'  ||  $filetype ==='video/webm' ||  $filetype ==='video/ogg'){
+              
+              $mime_type = 'video';
+          }
+      
+
+
+                 
+           
+              //save post
+            $post = Post::create([
+                'file' =>$newName,
+                'mime_type' =>$mime_type,
+                 'user_id' => $user,
+                 'body' =>$body 
+
+            ]);
+            return response()->json( $post); 
+            }
+            else{
+            
+       
+          //save post
+        $post = Post::create([
+            'file' =>NULL,
+            'mime_type' =>NULL,
+             'user_id' => $user,
+             'body' =>$body 
+
+        ]);
+        return response()->json( $post); 
+            }
+
+       
+
+  
     }
 
     /**
@@ -104,11 +167,11 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        $post = Post::find($id);
+        $post = User::where('slug', $slug)->first()->posts;
       
-        return view('Post')->with(['post' => $post]);
+        return response()->json(['posts' => $post]);
     }
 
     /**
@@ -147,11 +210,17 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $user)
     {
-        $post = Post::find($id);
-        $post->delete();
-        return redirect('/')->with('success', 'successfully deleted item');
+        $post = Post::where('id', $id)
+                                 ->where('user_id', $user)->first();
+     $deleted =   $post->delete();
+     if ($deleted) {
+        return response()->json('successfully deleted item');
+
+     }
+     return response()->json('some thing wrong happend try again!!');
+     
     }
 
     public function getComments()

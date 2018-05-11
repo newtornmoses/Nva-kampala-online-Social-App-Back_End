@@ -47,21 +47,25 @@ class ReplyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request , $id)
+    public function store(Request $request , $id, $user)
     {  
         $comment_id = comments::find($id);
        $reply = new Reply();
        $reply->reply = $request->input('reply');
-       $reply->user_id= Auth::id();
-       $reply->comment_id =$comment_id->id;
+       $reply->user_id= $user;
+       $reply->comments_id =$comment_id->id;
        $reply->save();
        
    
        $comment_id->update([
            'reply_id' => $reply->id
        ]);
+       // get  all replies for the comment
+          $commentReplies = Reply::where('comments_id', $id)->get();
+                                                      
 
-       return redirect()->back();
+
+       return  response()->json($commentReplies);
 
     }
 

@@ -41,24 +41,27 @@ class commentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request  $request, $id)
+    public function store(Request  $request, $id, $user)
     {
         $this->validate($request, [
             'comment'=> 'required|max:220',
             ]
         );
 
+    
+
         $post = Post::find($id);
 
         $comment = new comments();
         $comment->comment=$request->input('comment');
-        $comment->user_id =Auth::user()->id;
+        $comment->user_id =$user;
         $comment->post_id =$post->id;
         $comment->reply_id=0;
         $comment->save();
 
-    
-        return redirect()->back();
+        // fetch all comments 
+        $allcomments =  comments::all();
+        return response()->json($allcomments);
     }
 
     /**
